@@ -41,14 +41,17 @@ class Reducer[K2,V2,V3](reducing:(K2,List[V2])=> (K2,V3)) extends Actor {
 // - mapping és la funció dels mappers
 // - reducing és la funció dels reducers
 class MapReduce[K1,V1,K2,V2,V3](
-                                 input:List[(K1,List[V1])],
-                                 mapping:(K1,List[V1]) => List[(K2,V2)],
-                                 reducing:(K2,List[V2])=> (K2,V3)) extends Actor {
+                                 input: List[(K1, List[V1])],
+                                 mapping: (K1, List[V1]) => List[(K2, V2)],
+                                 reducing: (K2, List[V2]) => (K2, V3),
+                                 numMappers: Int = 1,
+                                 numReducers: Int = 1
+                               ) extends Actor {
 
 
-  var nmappers = 0 // adaptar per poder tenir menys mappers
+  var nmappers = numMappers // adaptar per poder tenir menys mappers
   var mappersPendents = 0
-  var nreducers = 0 // adaptar per poder tenir menys reducers
+  var nreducers = numReducers // adaptar per poder tenir menys reducers
   var reducersPendents = 0
 
   var num_files_mapper = 0
@@ -126,8 +129,9 @@ class MapReduce[K1,V1,K2,V2,V3](
         // pel constructor del Reducer amb paràmetres
         nreducers = dict.size
         reducersPendents = nreducers // actualitzem els reducers pendents
-        val reducers = for (i <- 0 until nreducers) yield
-          context.actorOf(Props(new Reducer(reducing)), "reducer"+i)
+        val reducers: Seq[ActorRef] = for (i <- 0 until nreducers) yield {
+          context.actorOf(Props(new Reducer(reducing)), "reducer" + i)
+        }
         // No cal anotar els tipus ja que els infereix de la funció reducing
         //context.actorOf(Props(new Reducer[K2,V2,V3](reducing)), "reducer"+i)
 

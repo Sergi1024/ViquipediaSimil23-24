@@ -35,6 +35,11 @@ object ViquipediaParse {
 
     // elimino les que tenen :
     val filteredRefs = refs.filterNot(_.contains(':'))
+    val newRefs = filteredRefs.map { ref =>
+      // Eliminar [[ i ]]
+      val cleanReference = ref.substring(2, ref.length - 2)
+      cleanReference
+    }
 
     // caldrà eliminar-ne més?
 
@@ -42,6 +47,6 @@ object ViquipediaParse {
     //println(refs.length)
     //println(filteredRefs.length)
     xmlleg.close()
-    ResultViquipediaParsing(titol, contingut, filteredRefs)
+    ResultViquipediaParsing(titol, contingut, newRefs)
   }
 }

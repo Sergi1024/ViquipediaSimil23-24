@@ -25,6 +25,14 @@ object ProcessListStrings {
     }
   }
 
+  def getListOfNames(dir: String):List[String] = {
+    val d = new File(dir)
+    if (d.exists && d.isDirectory) {
+      d.listFiles.filter(_.isFile).map(dir++_.getName).toList
+    } else {
+      List[String]()
+    }
+  }
   // donat un nom de directori mostrem els fitxers txt d'un directori
   def mostrarTextDirectori(directori:String): Unit =
   {
