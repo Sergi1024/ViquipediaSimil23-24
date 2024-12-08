@@ -167,6 +167,7 @@ object segonaPart extends App {
   similarDocs.foreach(println)
 
   // Funció per mesurar el temps d'execució d'un bloc de codi
+  // Maquina usada: 13th Gen Intel(R) Core(TM) i5-13600KF   3.50 GHz
   def timeMeasurement[A](block: => A): (A, Long) = {
     val startTime = System.nanoTime()
     val result = block
